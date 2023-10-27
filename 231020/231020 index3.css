@@ -1,0 +1,86 @@
+*{
+    margin: 0;  padding: 0;
+    box-sizing: border-box;
+    /* border-box: padding으로 늘어난 크기를 테두리에 다시 맞춤 */
+    list-style: none;
+    text-decoration: none;
+}
+
+a{ 
+    color: black;
+}
+
+
+nav{
+    width: 100%; height: 40px;
+    border: 1px solid #ccc;
+    background: #5461C4;
+    display: flex;
+    justify-content: center;
+}
+
+/* 메뉴아래 그림만들기 */
+.widthImg{
+    width: 80%; height: 200px;
+    border: 0px solid #ccc;
+    margin: 0 auto;
+    background: url(../img/bg0.jpg);
+    background-size: 100% 100%;
+}
+
+/* 4열 그림만들기 */
+.at0{
+    width: 1000px;height: 500px;
+    border: 1px solid black;
+    margin: 30px auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.at0 div{
+    width: 24%;
+    border: 1px solid black;
+}
+
+.at0 .heightImg{
+    background: url(../img/img7.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.at0 div .img_text_Box {
+    position: relative;
+    top: 0; left: 0;
+    width: 100%; height:240px;
+    border: 1px solid black;
+    overflow: hidden;
+}
+
+.at0 div .img_text_Box:hover .imgText{
+    top:80%;
+}
+
+.at0 div .img_text_Box:hover p .img{
+    transform: scale(1.2);
+}
+
+.at0 div .img_text_Box:nth-child(2){
+    margin-top: 18px;
+}
+
+.at0 div .img_text_Box p{
+    width: 100%; height: 100%;
+}
+
+.at0 div .img_text_Box p img{
+    width: 100%; height: 100%;
+}
+
+.at0 div .img_text_Box .imgText{
+    position: absolute;
+    width: 100%; height: 50px;
+    border: 0px solid red;
+    background: #999;
+    color: white;
+    line-height: 50px;
+    transition: 0.5s;
+}
