@@ -1,0 +1,123 @@
+package edu.java.project3;
+
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+public class HPEvent {
+	
+
+//	labelImage / dataPanel / recordPanel
+	
+	HPGUI hpGUI;
+
+    public HPEvent(HPGUI hpGUI) {
+        this.hpGUI = hpGUI;
+    }
+
+    public void event() {
+
+        hpGUI.btnList.get(0).jButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showDataPanel();
+                
+                // 검색을 눌렀을 때 나오는 새로운 GUI창
+                // 미완성 -> size 조절이 안됨
+                JFrame sortNameJFrame = new JFrame("운동종목");
+                sortNameJFrame.setBounds(400,450, 230,150);
+                sortNameJFrame.setLayout(null);
+                JPanel sortNamePanel = new JPanel(new GridLayout(1, 1));
+                sortNamePanel.setBounds(30, 20, 150, 50);
+                
+                JTextField sortNameTextField = new JTextField();
+                
+                sortNameJFrame.add(sortNamePanel);
+                sortNamePanel.add(sortNameTextField);
+                sortNameJFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                sortNameJFrame.setVisible(true);
+                
+                /* 추가부분
+                sortNameTextField.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JFrame sortNameJFrame = new JFrame("알림");
+		                sortNameJFrame.setBounds(600,600, 300,150);
+		                sortNameJFrame.setLayout(null);
+		                JLabel sortNameLabel = new JLabel("입력하신 운동이름을 확인해주세요");
+		                sortNameLabel.setBounds(40, 20, 230, 50);
+		                
+		                
+		                sortNameJFrame.add(sortNameLabel);
+		                sortNameJFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		                sortNameJFrame.setVisible(true);
+					}
+				});
+				*/
+            }
+        });
+
+        hpGUI.btnList.get(1).jButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+            }
+        });
+
+        hpGUI.btnList.get(2).jButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showRecordPanel();
+            }
+        });
+
+        hpGUI.btnList.get(3).jButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+            	/* 추가부분
+            	JFrame addExerciseNameFrame = new JFrame("새폴더 이름");
+            	addExerciseNameFrame.setBounds(400,450, 230,150);
+            	addExerciseNameFrame.setLayout(null);
+                JPanel addExerciseNamePanel = new JPanel(new GridLayout(1, 1));
+                addExerciseNamePanel.setBounds(30, 20, 150, 50);
+                
+                JTextField addExerciseNameTextField = new JTextField();
+                
+                addExerciseNameFrame.add(addExerciseNamePanel);
+                addExerciseNamePanel.add(addExerciseNameTextField);
+                addExerciseNameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                addExerciseNameFrame.setVisible(true);
+                
+        		addExerciseNameTextField.addActionListener(new ActionListener() {
+					
+    						@Override
+    						public void actionPerformed(ActionEvent e) {
+    			            	try {
+    			                    
+    			            		Path folderPath;
+    								Files.createDirectories(folderPath = Paths.get("C:/data/health/"+addExerciseNameTextField.getText()));
+    							} catch (IOException e1) {
+    								// TODO Auto-generated catch block
+    								e1.printStackTrace();
+    							}
+    						}
+    					});
+    			*/
+            }
+        });
+    }
+
+    public void showDataPanel() {
+        hpGUI.labelImage.setVisible(false);
+        hpGUI.recordPanel.setVisible(false);
+        hpGUI.dataPanel.setVisible(true);
+    }
+
+    public void showRecordPanel() {
+        hpGUI.labelImage.setVisible(false);
+        hpGUI.recordPanel.setVisible(true);
+        hpGUI.dataPanel.setVisible(false);
+    }
+}
