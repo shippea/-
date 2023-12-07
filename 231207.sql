@@ -91,7 +91,7 @@ WHERE hire_date >= '2005-01-01';
 SELECT emp_name, hire_date
 FROM EMPLOYEES 
 WHERE hire_date BETWEEN '2004-01-01' AND '2004-12-31'
-	OR hire_date BETWEEN '2006-01-01' AND '2006-12-31'
+	OR hire_date BETWEEN '2006-01-01' AND '2006-12-31';
 -- or뒤에 and를 쓴 것은 한 덩어리로 인식
 
 /* 10. 직원 중에서 부서 아이디가 20,30,40,70,110인 직원들의 이름과 부서아이디를 조회 */
@@ -122,8 +122,6 @@ Join: 두 개 이상의 테이블의 데이터를 하나의 결과로 만들기 
 Inner Join(Cartesian Join): 한 테이블에 PK와 다른 테이블의 FK가 같다는 조건 하에 합치는 것 
 */
 
-SELECT * FROM DEPARTMENTS d;
-SELECT * FROM EMPLOYEES e;
 
 /* 13. 직원의 이름과 부서명을 조회 */
 
@@ -144,8 +142,6 @@ FROM EMPLOYEES e, JOBS j
 WHERE e.job_id = j.job_id;
 
 /* 15. 2006년에 일을 한 직원의 이름과 작업시작일, 작업종료일을 조회 */
-SELECT * FROM JOB_HISTORY jh;
-SELECT * FROM EMPLOYEES e;
 
 SELECT e.EMP_NAME, jh.START_DATE, jh.END_DATE
 FROM EMPLOYEES e, JOB_HISTORY jh
@@ -155,8 +151,6 @@ WHERE e.EMPLOYEE_ID = jh.EMPLOYEE_ID
 			AND jh.END_DATE >= '2006-01-01');
 
 /* 16. 이름이 D로 시작하는 직원 중 JOB_ID가 IT_PROG인 직원들의 직원아이디와 이름, 직업명을 조회 */
-SELECT * FROM EMPLOYEES e;
-SELECT * FROM JOBS j;
 
 SELECT e.EMPLOYEE_ID, e.EMP_NAME, JOB_TITLE
 FROM EMPLOYEES e, JOBS j
@@ -165,8 +159,6 @@ WHERE e.JOB_ID = j.JOB_ID
 	AND e.JOB_ID = 'IT_PROG';
 
 /* 17. 고객 중에서 국적이 미국(United States of America)인 고객들의 이름과 국가명. 국가코드를 조회 */
-SELECT * FROM CUSTOMERS cu;
-SELECT * FROM COUNTRIES co;
 
 -- SELECT COUNT(*) // 행 개수를 한번에 알 수 있음
 -- configure 값을 조절하면 한번에 보여주는 결과값의 행의 개수를 조절할 수 있음
