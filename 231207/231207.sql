@@ -1,5 +1,3 @@
-DROP TABLE table5;
-
 CREATE TABLE table5(
 	col1 char(1),
 	col2 varchar2(20),
