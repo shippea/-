@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/Gangneung.css">
+    <script src="https://kit.fontawesome.com/3c8b560394.js" crossorigin="anonymous"></script>
+    <script src="javascript/jquery.3.7.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- jquery 링크는 js 링크 위에 먼저 인식되게 올려줘야 함  -->
+    <script src="javascript/Gangneung.js"></script>
+</head>
+<body>
+    <p class="title">
+        강릉입니다.
+    </p>
+<script>
+    function section_func(js){
+        smallImg5.style.display="none";
+        sec0.style.display="none";
+        sec1.style.display="none";  
+        sec2.style.display="none";
+        sec3.style.display="none";
+        sec4.style.display="none";
+        sec5.style.display="none";
+        sec6.style.display="none";
+
+        if(js == 0){
+            sec0.style.display="flex";
+            smallImg5.style.display="flex";
+        }
+        // blcock으로 명시하면 flex됐던 것들이 다 없어짐
+ 
+        else if(js == 1){   // 경제: 지하철 동영상
+            sec1.style.display="block";
+            sec1Mp4.style.display="block";
+        }
+
+        else if(js == 2){   // 문화: 
+            sec2.style.display="block";
+        }
+
+        else if(js == 3){   // 스포츠:
+            sec3.style.display="block";
+        }
+
+        else if(js == 4){   // 모임:
+            sec4.style.display="block";
+        }
+
+        else if(js == 5){   // 갤러리:
+            sec5.style.display="block";
+        }
+
+        else if(js == 6){   // 효성:
+            sec6.style.display="block";
+        }
+
+    }
+</script>
+    <div class="wrap">
+        <nav>
+            <div onclick="section_func(0)">홈으로</div>
+            <div onclick="section_func(1)">경제</div>
+            <div onclick="section_func(2)">문화</div>
+            <div onclick="section_func(3)">점심메뉴 선택</div>
+            <div onclick="section_func(4)">모임</div>    
+            <div onclick="section_func(5)">갤러리</div>    
+            <div onclick="section_func(6)">효성</div>    
+        </nav>
+
+        <section id="sec1">            <!-- 경제메뉴 -->
+            <div class="sec1Bg bg" id="sec1Mp4">
+                <video autoplay muted controls loop="3">
+                    <!-- loop: 무한반복 loop="3": 3번만 실행-->
+                    <source src="video/vid.mp4">
+                </video>
+                <p class="sec1Bg_skip" onclick="sec1Mp4.style.display='none'">skip</p>
+                
+            </div>
+            <p>경제 화면으로 돌아왔어요</p>
+        </section>
+        
+        <section id="sec2">            <!-- 문화메뉴 -->
+            <div class="sec2_title">
+                문화 화면
+
+            </div>
+            <div class="sec2Big">
+                <ul class="Big_img5">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+            <ul class="btn">
+                <li class="Big_prev"><i class="fa-solid fa-chevron-left"></i></li>
+                <li class="Big_next"><i class="fa-solid fa-chevron-right"></i></li>
+            </ul>
+            <ul class="sec2Box1">
+                <li>
+                    <div>한결같되</div>
+                    <div>날로 새롭게</div>
+                    <p>2001년부터 지금까지</p>
+                    <p>꾸준하게 학습과 운동을</p>
+                    <p>했어요...</p>
+                    <p>자세히 알아보기  </p>
+                </li>
+                <li>
+                    <div class="sec2right"><img src="img/강릉관광지1.webp" alt=""></div>
+                    <div class="sec2right"><img src="img/강릉숙소4.jfif" alt=""></div>
+                    <div class="sec2right"><img src="img/강릉숙소5.jpg" alt=""></div>
+                </li>
+            </ul>
+        </section>
+
+        <section id="sec3">            <!-- 점심메뉴 -->
+            <div class="sec3_title">점심메뉴 고르기</div>
+            <div class="layout">
+                <!-- 한식, 분식, 중식 ,양식 선택한 음식 종류 표시 -->
+                <ul class="wrap3">
+                    <li class="sec3_box0"></li>
+                    <li class="sec3_box1"></li>
+                    <li class="sec3_box2"></li>
+                    <li class="sec3_box3"></li>
+                </ul>
+                <!-- 한식, 분식, 중식 ,양식 선택한 음식 그림과 가격 표시 -->
+                <ul class="sec3_imgText">
+                    <li>
+                        <div class="sec3_img">
+                            <img src="img/lunch.png" alt="" class="sec3_pic">
+                        </div>
+                        <div class="sec3_text"></div>
+                    </li>    
+                </ul>
+                <!-- 한식, 분식, 중식, 양식 음식 종류 콤보박스 -->
+                <div class="combo_box">
+                    <select name="" onchange="func_ch(this)" id="sel">
+                        <option value="0">선택하세요</option>
+                        <option value="1">천진분식</option>
+                        <option value="2">육수당</option>
+                        <option value="3">중화반점</option>
+                        <option value="4">대왕 돈까스</option>
+                        <option value="5">떡볶이 맛집</option>
+                        <option value="6">김밥천국 24시</option>
+                        <option value="7">퓨전요리점</option>
+                        <option value="8">맛있다 왕칼국수</option>
+                        <option value="9">집밥 백반 식당</option>
+                    </select>
+                </div>
+                <div class="sec3_btn">
+                    <button class="sec3_start">선택 시작</button>
+                    <button class="sec3_again">다시 선택 </button>    
+                </div>    
+            </div>
+        </section>
+
+        <section id="sec4">            <!-- 모임메뉴 -->
+            <div class="sec4_title">
+
+            </div>
+        </section>
+
+        <section id="sec5">            <!-- 갤러리메뉴 -->
+            <div class="sec5_title">
+                갤러리 화면
+            </div>
+            <ul class="sec5Box">
+                <li><div class="sec5Box_text"></div></li>
+                <li><div class="sec5Box_text"></div></li>
+                <li><div class="sec5Box_text"></div></li>
+                <li><div class="sec5Box_text"></div></li>
+                <li><div class="sec5Box_text"></div></li>
+            </ul>
+        </section>
+
+        <section id="sec6">            <!-- 효성메뉴 -->
+            <div class="sec6_title">                
+                효성화면
+            </div>
+
+            <div class="sec6_box1">
+                <div>
+                    <div class="sec6_box1_img sec6_box1_img1"></div>
+                    <div class="sec6_box1_child sec6_box1_child1">
+                        <p>1</p>
+                        <p>2</p>
+                        <p>3</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="sec6_box1_img sec6_box1_img2"></div>
+                    <div class="sec6_box1_child sec6_box1_child2">
+                        <p>1</p>
+                        <p>2</p>
+                        <p>3</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="sec6_box1_img sec6_box1_img3"></div>
+                    <div class="sec6_box1_child sec6_box1_child3">
+                        <p>1</p>
+                        <p>2</p>
+                        <p>3</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="sec6_box1_img sec6_box1_img4"></div>
+                    <div class="sec6_box1_child sec6_box1_child4">
+                        <p>1</p>
+                        <p>2</p>
+                        <p>3</p>
+                    </div>
+                </div>
+            </div>
+   
+        </section>
+
+        <!-- 초기화면에 보여지는 section(.sec0) -->
+        <section class="sec" id="sec0">
+            <div class="box1" onmouseover="bus.style.display='none'"
+                                onmouseout="bus.style.display='block'">
+                <p>갤러리</p>
+                <div class="sleepBox box">
+                    <div class="big">
+                        <ul class="img5">
+                            <li><div>글자-1</div></li>
+                            <li><div>글자-2</div></li>
+                            <li><div>글자-3</div></li>
+                            <li><div>글자-4</div></li>
+                            <li><div>글자-5</div></li>
+                            <li><div>글자-1</div></li>
+                        </ul>
+                    </div>
+                </div>
+             </div>
+            <div class="box2" id="box2">
+                <p>교통안내</p>
+                <div class="bus box" id="bus">
+                    <div class="box2Title">
+                        <div>안전한 교통</div>
+                        <small>편리한 교통</small>
+                    </div>
+                    <div class="both">
+                        <div>111</div>
+                        <div>222</div>
+                        <p class="one"></p>
+                    </div>
+                    <div class="box2Img5">
+                        <ul>
+                            <li><img src="img/강릉카페1.webp" alt=""></li>
+                            <li>상품명: 지도책</li>
+                            <li>가격: 5000원</li>
+                            <li>사이즈: 250x300</li>
+                        </ul>
+                        <ul>
+                            <li><img src="img/강릉카페2.webp" alt=""></li>
+                            <li>상품명: 지도책</li>
+                            <li>가격: 5000원</li>
+                            <li>사이즈: 250x300</li>
+                        </ul>
+                        <ul>
+                            <li><img src="img/강릉카페3.jpg" alt=""></li>
+                            <li>상품명: 지도책</li>
+                            <li>가격: 5000원</li>
+                            <li>사이즈: 250x300</li>
+                        </ul>
+                        <ul>
+                            <li><img src="img/강릉카페4.jpg" alt=""></li>
+                            <li>상품명: 지도책</li>
+                            <li>가격: 5000원</li>
+                            <li>사이즈: 250x300</li>
+                        </ul>
+                        <ul>
+                            <li><img src="img/강릉카페5.jpg" alt=""></li>
+                            <li>상품명: 지도책</li>
+                            <li>가격: 5000원</li>
+                            <li>사이즈: 250x300</li>
+                        </ul>
+                    </div>
+
+                </div>
+                <!-- 선택자는 별명을 여러개 가질 수 있음 -->
+            </div>
+        </section>
+
+        <!-- smallImg5: nav와 같은 자식 -->
+        <ul class="smallImg5" id="smallImg5">
+            <li onclick="func('강릉카페1.webp');"><img src="../Gangneung/img/강릉카페1.webp" alt=""></li>
+            <li onclick="func('강릉카페2.webp');"><img src="../Gangneung/img/강릉카페2.webp" alt=""></li>
+            <li onclick="func('강릉카페3.jpg');"><img src="../Gangneung/img/강릉카페3.jpg" alt=""></li>
+            <li onclick="func('강릉카페4.jpg');"><img src="../Gangneung/img/강릉카페4.jpg" alt=""></li>
+            <li onclick="func('강릉카페5.jpg');"><img src="../Gangneung/img/강릉카페5.jpg" alt=""></li>
+        </ul>
+
+    </div>
+    <div id="full">
+        <p id="fullClose" onclick="full.style.display='none'">
+            X
+        </p>
+        <div class="fullImg">
+            <img src="../Gangneung/img/강릉맛집1.jfif" alt="" name="fullPic">
+        </div>
+    </div>
+<script>
+    function func(js) {
+        console.log(js);
+        full.style.display="block";
+        fullPic.src="img/" +js;
+    }
+</script>
+</body>
+</html>

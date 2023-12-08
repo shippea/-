@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/3c8b560394.js" crossorigin="anonymous"></script>
+    <script src="javascript/jquery.3.7.1.js"></script>
+    <title>Document</title>
+    <script src="javascript/index.js"></script>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="layout">
+        <!-- 한식, 분식, 중식 ,양식 선택한 음식 종류 표시 -->
+        <ul class="wrap">
+            <li class="box0"></li>
+            <li class="box1"></li>
+            <li class="box2"></li>
+            <li class="box3"></li>
+        </ul>
+        <!-- 한식, 분식, 중식 ,양식 선택한 음식 그림과 가격 표시 -->
+        <ul class="imgText">
+            <li>
+                <div class="img">
+                    <img src="img/lunch.png" alt="" class="pic">
+                </div>
+                <div class="text"></div>
+            </li>    
+        </ul>
+        <!-- 한식, 분식, 중식, 양식 음식 종류 콤보박스 -->
+        <div class="combo_box">
+            <select name="" onchange="func_ch(this)" id="sel">
+                <option value="0">선택하세요</option>
+                <option value="1">천진분식</option>
+                <option value="2">육수당</option>
+                <option value="3">중화반점</option>
+                <option value="4">대왕 돈까스</option>
+                <option value="5">떡볶이 맛집</option>
+                <option value="6">김밥천국 24시</option>
+                <option value="7">퓨전요리점</option>
+                <option value="8">맛있다 왕칼국수</option>
+                <option value="9">집밥 백반 식당</option>
+            </select>
+        </div>
+        <div class="btn">
+            <button class="start">선택 시작</button>
+            <button class="again">다시 선택 </button>    
+        </div>    
+    </div>
+</body>
+</html>

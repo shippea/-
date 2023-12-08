@@ -1,0 +1,85 @@
+*{
+    margin: 0;  padding: 0;
+    box-sizing: border-box;
+    /* border-box: padding으로 늘어난 크기를 테두리에 다시 맞춤 */
+    list-style: none;
+    text-decoration: none;
+}
+
+a{ color: black;}
+
+.title{
+    font-size: 1.5rem;
+    line-height: 70px;
+}
+
+.wrap{
+    width: 100%;
+    border: 0px solid black;
+}
+
+.wrap nav{
+    width: 100%;
+    border: 0px solid blue;
+    display: flex;
+    justify-content: space-between;
+}
+
+.wrap nav div{
+    flex: 1; height: 50px;
+    /* flex:1 // 너비설정없이 태그 균등분배 */
+    border: 0px solid black;
+    text-align: center;
+    line-height: 50px;
+}
+
+.wrap .sec{
+    width: 100%;
+    margin-top: 30px;
+    border: 0px solid black;
+    display: flex;
+}
+
+.wrap .sec> div{
+    width: 10%;
+    border: 1px solid orange;
+    position: relative;
+    top: 0; left: 0;
+}
+/* >: 자식선택자 바로 하위 태그에만 설정적용 */
+
+.wrap .sec div p{
+    width: 100%; height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border: 0px solid black;
+}
+
+.wrap .sec div .sleepBox{
+    position: absolute;
+    top: 50px; left: 0;
+    width: 1000%; 
+    border: 1px solid blue;
+}
+
+.wrap .sec div .bus{
+    width: 1000%; 
+    border: 1px solid green;
+    /* margin-left: -100%;*/
+    position: absolute;
+    top: 50px; left: -101.5%;
+}
+
+.wrap .sec div:hover .box{
+    display: block;
+}
+
+.wrap .sec .box{
+    background: white;
+    display: none;
+    height: 500px;
+    padding: 30px;
+    /* padding: 들여쓰기 기능을 가짐
+               but 박스 크기도 같이 늘어남
+               -> 박스크기 지정으로 크기변동 막을 수 있음 */
+}
