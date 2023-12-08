@@ -1,0 +1,60 @@
+* {
+    margin: 0; padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+}
+.layout {
+    width: 95%; 
+    /* height: 800px; */
+    margin: 50px auto;
+    border: 0dvb solid red;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.wrap {
+    position: relative; top: 0; left: 0;
+    z-index: 999;
+    width: 48%; height: 150px;
+    border: 1px solid black;
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 15px;
+}
+.wrap> li {
+    width: 50%; height: 50px;
+    border: 0px solid green;
+    line-height: 50px; font-size: 20px;
+    background: #f2f2f2;
+}
+.wrap> li .btn {
+    cursor: pointer;
+}
+/* 첫 번째 li - 문제  */
+.wrap> li:nth-child(1) { 
+    width: 100%;
+}
+/* 두 번째 li - 클릭  */
+.wrap> li:nth-child(2) { 
+    width: 30%; border-radius: 10px;
+    background: rgb(81, 62, 116);
+    color: white;
+    text-align: center;
+}
+/* 세 번째 li - 입력 하는 곳  */
+.wrap> li:nth-child(3) { width: 30%;}
+.wrap> li:nth-child(3) input { 
+    width: 100%; height: 100%;
+    text-indent: 20px;
+    font-size: 30px;
+}
+/* 네 번째 li - 결과 표시 하는 곳  */
+.wrap> li:nth-child(4) { 
+    width: 30%;
+    border-radius: 20px;
+    background: orange; 
+    font-size: 20px; /* color: white; */
+    font-weight: bold; text-align: center;
+}

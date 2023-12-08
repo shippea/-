@@ -1,0 +1,93 @@
+*{
+    margin: 0; padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+}
+
+a{
+    color: black;
+}
+
+.layout{
+    width: 1200px; height: 400px;
+    padding: 30px;
+    margin: 50px auto;
+    border: 2px solid red;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 15px;
+}
+
+.layout .wrap{
+    width: 200px; height: 200px;
+    border: 0px solid black;
+}
+
+.layout .wrap li{
+    width: 100%; height: 50px;  
+    border: 0px solid blue;
+    text-indent: 10px;
+    line-height: 50px;
+    border-radius: 15px;
+}
+
+/* 한식, 분식, 중식 ,양식 선택한 음식 그림과 가격 표시 */
+.layout .imgText{
+    width: 300px; height: 300px;
+    border: 2px solid green;
+    border-radius: 15px;
+}
+
+.layout .imgText li{
+    text-align: center;
+}
+
+.layout .imgText li .img{
+    height: 250px;
+}
+
+.layout .imgText li .img img{
+    width: 80%; height: 200px;
+    margin-top: 25px;
+}
+
+.layout .imgText li .text{
+    height: 50px;
+    line-height: 50px;
+}
+
+
+.layout .combo_box{
+    /* position: absolute;
+    top: 50px; left: 77%; */
+    border: 0px solid black;;
+    width: 150px;
+}
+
+.layout .combo_box select{
+    display: block;
+    width: 100%; height: 40px;
+}
+
+.layout .combo_box select option{
+    width: 100%;
+    font-size: 1rem;
+}
+
+.layout .btn{
+    margin-top: -5px;    
+    border: 0px solid black;
+}
+
+.layout .btn button{
+    width: 150px; height: 50px;
+    margin: 0 auto;
+    margin-left: 20px;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.layout .btn button:hover{
+    background: blue;
+    color: white;
+}

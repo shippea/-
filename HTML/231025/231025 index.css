@@ -1,0 +1,15 @@
+*{
+    margin: 0; padding: 0;
+    box-sizing: border-box;
+
+}
+
+a{
+    color: black;
+}
+
+.box{
+    width: 200px; height: 250px;
+    border: 1px solid black;
+    text-align: center;
+}

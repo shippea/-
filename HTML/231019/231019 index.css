@@ -1,0 +1,40 @@
+div{
+    position: relative;
+    top:0; left:0;
+    /* aboslute 기본값 top:0 left:0 */
+    /* relative: 자기 자리기준에서 이동 */
+
+    /* 부모태그: relative, 자식태그: absolute가 일반적인 형태 */
+    width: 150px; height: 150px;
+    border: 1px solid black;
+}
+
+.red{
+    background: red;
+    z-index: 1;
+    /* z-index: 레벨(레이어) 개념, 숫자가 클 수록 위로 올라감 */
+}
+
+.green{
+    background: green;
+    /* top: 50px; left: 100px; */
+    z-index: 2;
+}
+
+.blue{
+    background: blue;
+    /* top: 100px; left: 50px; */
+    z-index: 3;
+}
+
+.orange{
+    height: 3000px;
+    background: orange;
+}
+
+.fixed{
+    position: fixed;
+    /* fixed: 화면이 움직여도 고정*/
+    top: 50px; left:200px;
+    background: black;
+}
