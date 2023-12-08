@@ -1,0 +1,11 @@
+[Proxy 패턴 실습]
+
+1~10까지의 숫자 중 하나를 입력받습니다
+1~5가 입력된 경우 proxy에서 출력합니다
+6~10이 입력된 경우 원본에서 출력합니다
+단) 원본 객체는 필요할때만 생성
+
+ProxyMain (메인class)
+INum (pxory패턴 인터페이스)
+INumberProxy (proxy) 
+INumber (원본class)
