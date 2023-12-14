@@ -16,10 +16,11 @@ WHERE e.HIRE_DATE >= '2005-01-01';
 
 
 /* # 실습3. 연봉이 전체평균연봉보다 높은 직원의 모든 정보를 연봉이 많은 순으로 조회 (연봉=salary*12) */
+-- avg 할때는 nvl로 null값을 제외해줘야됨
 
 SELECT * 
 FROM EMPLOYEES e
-WHERE e.SALARY*12 >= (SELECT avg(e.SALARY*12) FROM EMPLOYEES e )
+WHERE e.SALARY*12 >= (SELECT avg(nvl(e.SALARY*12,0)) FROM EMPLOYEES e )
 ORDER BY e.SALARY*12 DESC; 
 
 /* # 실습4. 모든 직원의 월급, 커미션, 월급+커미션을 월급+커미션이 많은 순으로 조회 */
@@ -69,6 +70,7 @@ SELECT *
 FROM EMPLOYEES e
 WHERE LENGTH(e.FIRST_NAME ) <=5
 	OR LENGTH (e.LAST_NAME) <=5;
+
 /* # 실습10. 짝수년도에 고용된 직원 중에서 COMMINSION_PCT가 있는 직원의 정보를 조회 */
 
 SELECT *
@@ -78,6 +80,16 @@ WHERE MOD(TO_CHAR(e.HIRE_DATE,'yyyy'),2)=0
 			 
 /* # 실습11. 월급이 10000이상이면 '고소득자', 10000미만 5000이상이면 '일반소득자' 5000미만이면 '저소득자'로 직원의 정보를 조회 */
 	
+-- 풀이
+SELECT e.*,
+	CASE WHEN e.SALARY >= 10000 THEN '고소득자'
+		WHEN e.SALARY >= 5000 AND e.SALARY < 10000 THEN '일반소득자'
+		WHEN e.SALARY < 5000 THEN '저소득자'
+		ELSE '기초수급자'
+	END "소득분류"
+FROM EMPLOYEES e;
+
+-- self
 SELECT e1.*, e2.IncomeClass
 FROM EMPLOYEES e1, (SELECT e.EMPLOYEE_ID,
 	CASE WHEN e.SALARY >=10000 THEN '고소득자'
@@ -111,7 +123,6 @@ WHERE d.MANAGER_ID BETWEEN '201' AND '205'
 ORDER BY d.DEPARTMENT_NAME ASC;
 
 /* # 실습15. 부서명에 'a'가 포함되는 부서의 정보를 조회 */
----------------------------------------------
 
 SELECT *
 FROM DEPARTMENTS d
@@ -121,8 +132,7 @@ WHERE d.DEPARTMENT_NAME LIKE '%a%';
 
 SELECT *
 FROM DEPARTMENTS d
-WHERE d.DEPARTMENT_NAME LIKE 'P%'
-	AND d.DEPARTMENT_NAME LIKE '%s';
+WHERE d.DEPARTMENT_NAME LIKE 'P%s';
 
 /* # 실습17. 직원들의 JOB_ID를 12자리에 맞춰 오른쪽으로 정렬해서 조회 */
 
@@ -142,7 +152,7 @@ SELECT e.EMPLOYEE_ID, floor(MONTHS_BETWEEN(SYSDATE,e.HIRE_DATE)),
 FROM EMPLOYEES e;
 
 /* # 실습20. 직원들의 직무시작일과 직무종료일을 '0000년 00월 00일 00시 00분 00초'로 조회 */
-
+-- 
 SELECT TO_DATE(jh.START_DATE), TO_DATE(jh.END_DATE)
 FROM JOB_HISTORY jh;
 
@@ -160,22 +170,28 @@ FROM JOB_HISTORY jh;
 /* # 실습23. JOB_ID가  IT_PROG 또는 AC_ACCOUNT 또는 AC_MGR인 것에 대해
  		      IT_PROG이면 "정보부", AC_ACCOUNT이면 "회계부", AC_MGR이면 "관리부"로 조회 */
 
+-- 풀이
+
+SELECT decode (e.JOB_ID,
+		'IT_PROG', '정보부', 
+		'AC_ACCOUNT', '회계부',
+		'AC_MGR', '관리부') "부서 이름"
+FROM EMPLOYEES e;
+
+-- self
 SELECT j.JOB_TITLE, j.JOB_ID,
 	CASE WHEN j.JOB_ID='IT_PROG' THEN '정보부'
 		 WHEN j.JOB_ID='AC_ACCOUNT' THEN '회계부'
 		 WHEN j.JOB_ID='AC_MGR' THEN '관리부'
 	END AS 부서이름
-FROM JOBS j
-WHERE j.JOB_ID='IT_PROG'
-	OR j.JOB_ID='AC_ACCOUNT'
-	OR j.JOB_ID='AC_MGR';
+FROM JOBS j;
 
-/* # 실습24. 부서별로 부서아이디, 직원의 월급합계를 조회 */
+/* # 실습24. 부서별로 소속직원의수, 직원의 월급합계를 조회 */
 
-SELECT d.DEPARTMENT_NAME, d.DEPARTMENT_ID, sum(e.SALARY)
+SELECT d.DEPARTMENT_ID, sum(e.EMPLOYEE_ID), sum(e.SALARY)
 FROM EMPLOYEES e, DEPARTMENTS d
 WHERE e.DEPARTMENT_ID = d.DEPARTMENT_ID
-GROUP BY (d.DEPARTMENT_NAME, d.DEPARTMENT_ID);
+GROUP BY ( d.DEPARTMENT_ID);
 
 /* # 실습25. 부서별로 부서아이디, 최대급여와 최소급여의 차를 조회 */
 
@@ -185,24 +201,28 @@ WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
 GROUP BY (d.DEPARTMENT_NAME, d.DEPARTMENT_ID);
 
 /* # 실습26. 부서별로 직원의 수가 5이상인 부서의 부서아이디, 직원수를 조회 */
+-- having에서는 집계함수 사용가능
 
-SELECT d.DEPARTMENT_NAME, d.DEPARTMENT_ID, count(e.EMPLOYEE_ID) num 
-FROM DEPARTMENTS d, EMPLOYEES e,
-	(SELECT d.DEPARTMENT_ID did, count(e.EMPLOYEE_ID) emp_num
-		FROM EMPLOYEES e, DEPARTMENTS d
-		WHERE e.DEPARTMENT_ID = d.DEPARTMENT_ID
-		GROUP BY d.DEPARTMENT_ID) emp_numt
+SELECT d.DEPARTMENT_ID, count(e.EMPLOYEE_ID)
+FROM DEPARTMENTS d, EMPLOYEES e
 WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
-	AND e.DEPARTMENT_ID = emp_numt.did
-	AND emp_numt.emp_num >= 5
-GROUP BY (d.DEPARTMENT_NAME, d.DEPARTMENT_ID);
+GROUP BY (d.DEPARTMENT_ID)
+HAVING count(e.EMPLOYEE_ID)>=5;
 
 /* # 실습27. 전체 직원의 평균월급보다 부서의 평균월급이 높은 부서의 부서아이디, 평균월급을 조회 */
 
-SELECT d.DEPARTMENT_ID, avg(e.SALARY)
-FROM DEPARTMENTS d, EMPLOYEES e 
-WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
-	AND d.DEPARTMENT_ID IN (SELECT dep_avgt.did
+-- 풀이
+
+SELECT e.DEPARTMENT_ID, avg(nvl(e.SALARY,0))
+FROM EMPLOYEES e
+GROUP BY e.DEPARTMENT_ID 
+HAVING avg(nvl(e.SALARY,0)) > (SELECT avg(nvl(e.SALARY,0)) FROM EMPLOYEES e);
+
+-- 최종
+
+SELECT e.DEPARTMENT_ID, avg(nvl(e.SALARY,0))
+FROM EMPLOYEES e 
+WHERE e.DEPARTMENT_ID IN (SELECT dep_avgt.did
 							FROM 
 								(SELECT avg(e.SALARY) emp_avg
 								FROM EMPLOYEES e) emp_avgt,
@@ -211,7 +231,7 @@ WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
 								WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
 								GROUP BY d.DEPARTMENT_ID) dep_avgt
 							WHERE dep_avgt.dep_avg > emp_avgt.emp_avg)	
-GROUP BY d.DEPARTMENT_ID ; 
+GROUP BY e.DEPARTMENT_ID ; 
 
 --3. 평균월급이 더 많은 부서의 id 조회
 SELECT dep_avgt.did
@@ -235,40 +255,15 @@ SELECT avg(e.SALARY) emp_avg
 FROM EMPLOYEES e; emp_avgt
 
 /* # 실습28. 직무아이디, 직무별 소속직원의 수, 부서아이디, 부서별 소속직원의 수를 조회 */
-SELECT * FROM EMPLOYEES e;
-SELECT * FROM DEPARTMENTS d;
-SELECT * FROM JOB_HISTORY jh;
-SELECT * FROM JOBS j;
 
-SELECT jt.*, dt.*
-FROM 
-	(SELECT e.DEPARTMENT_ID did, d.DEPARTMENT_NAME dname, count(e.EMPLOYEE_ID) dnum
-		FROM DEPARTMENTS d, EMPLOYEES e
-		WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
-		GROUP BY e.DEPARTMENT_ID, d.DEPARTMENT_NAME) dt,
-	(SELECT e.JOB_ID jid, j.JOB_TITLE jname, count(e.EMPLOYEE_ID) jnum
-		FROM JOBS j, EMPLOYEES e
-		WHERE j.JOB_ID = e.JOB_ID
-		GROUP BY e.JOB_ID, j.JOB_TITLE) jt
-WHERE dt.e = jt.e;
-
---2. 부서아이디, 부서별 소속직원 수
-SELECT e.DEPARTMENT_ID did, d.DEPARTMENT_NAME dname, count(e.EMPLOYEE_ID) dnum
-FROM DEPARTMENTS d, EMPLOYEES e
-WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
-GROUP BY e.DEPARTMENT_ID, d.DEPARTMENT_NAME; dt
-
---1. 직무아이디, 직무별 소속직원 수
-SELECT e.JOB_ID jid, j.JOB_TITLE jname, count(e.EMPLOYEE_ID) jnum
-FROM JOBS j, EMPLOYEES e
-WHERE j.JOB_ID = e.JOB_ID
-GROUP BY e.JOB_ID, j.JOB_TITLE; jt
+SELECT e.JOB_ID, e.DEPARTMENT_ID, COUNT(e.EMPLOYEE_ID) 
+FROM EMPLOYEES e
+GROUP BY e.JOB_ID, e.DEPARTMENT_ID;
 
 
-
--------------------------------------------------------------------
--------------------------------------------------------------------
--------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
 
 /* # 실습1. 직원 아이디가 100인 직원과 같은 부서에 근무하는 
 				 직원들의 직원아이디, 직원명, 부서아이디, 부서명을 조회 */
@@ -319,8 +314,23 @@ GROUP BY d.DEPARTMENT_NAME, e.DEPARTMENT_ID;
 	
 /* # 실습6. 최대급여와 최소급여의 차가 가장 큰 직무를 수행하는 직원들의
  				직무아이디, 직무명, 직원아이디, 직원명을 조회 */
--- jobs tabledml max min salary 사용해보기!
+-- jobs tabled에서 max min salary 사용해보기!
 
+
+--self2
+SELECT j.JOB_ID, j.JOB_TITLE, e.EMPLOYEE_ID, (e.FIRST_NAME||' '||e.LAST_NAME) "EMP_NAME"
+FROM JOBS j, EMPLOYEES e
+WHERE j.JOB_ID = e.JOB_ID 
+	AND j.MAX_SALARY-j.MIN_SALARY = (SELECT max(j.MAX_SALARY-j.MIN_SALARY)
+										FROM JOBS j);			
+
+--1. 최대급여 - 최소급여 차가 가장 큰 값을 구하기
+
+SELECT max(j.MAX_SALARY-j.MIN_SALARY)
+FROM JOBS j;
+
+
+-- self
 SELECT j.JOB_ID, j.JOB_TITLE, e.EMPLOYEE_ID , (e.FIRST_NAME||' '||e.LAST_NAME) "EMP_NAME"
 FROM EMPLOYEES e, JOBS j, 
 	(SELECT t22.JOB_ID 
@@ -336,7 +346,7 @@ FROM EMPLOYEES e, JOBS j,
 WHERE e.JOB_ID = j.JOB_ID 
 	AND e.job_id = t3.job_id;
 
--- t3 / t2와 t22에서를 비교해서 max차이인 job_id를 조회
+--4. t3 / t2와 t22에서를 비교해서 max차이인 job_id를 조회
 SELECT t22.JOB_ID 
 FROM 
 	(SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS t22gap 
@@ -349,60 +359,31 @@ FROM
 WHERE t22.t22gap = t2.t2gap;
 
 
--- t22 / t2에서 뽑은 max 차이를 비교하기 위해 만든 t1 copy테이블
+--3. t22 / t2에서 뽑은 max 차이를 비교하기 위해 만든 t1 copy테이블
 SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS t22gap 
 FROM EMPLOYEES e 
 GROUP BY e.JOB_ID;
 
--- t2
+--2. t2
 SELECT max (t1.gap) AS t1gap
 FROM (SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS gap FROM EMPLOYEES e GROUP BY e.JOB_ID) t1;
 
--- t1
+--1. t1
 SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS gap 
 FROM EMPLOYEES e
 GROUP BY e.JOB_ID;
 
-------------------------------------------------------------
-
 /* # 실습7. 7. 직무수행시간(END_DATE-START_DATE)이 가장 길었던 직무를 수행했던 부서에
 					근무하는 직원들의 직무아이디, 직무명, 부서명, 직원아이디, 직원명을 조회 */
--- months_between 사용해보기!
 
 SELECT e.JOB_ID, j.JOB_TITLE, d.DEPARTMENT_NAME, e.EMPLOYEE_ID, (e.FIRST_NAME||' '||e.LAST_NAME) "EMP_NAME"
-FROM EMPLOYEES e, DEPARTMENTS d, JOBS j
-WHERE e.DEPARTMENT_ID = d.DEPARTMENT_ID
-	AND e.JOB_ID = j.JOB_ID 
-	AND e.DEPARTMENT_ID = (SELECT didt.did
-FROM 
-(SELECT d.DEPARTMENT_ID did, max(jh.END_DATE-jh.START_DATE) md
-	FROM DEPARTMENTS d, JOB_HISTORY jh
-	WHERE d.DEPARTMENT_ID = jh.DEPARTMENT_ID 
-	GROUP BY d.DEPARTMENT_ID) didt, 
-(SELECT max(jh.END_DATE-jh.START_DATE) md
-	FROM JOB_HISTORY jh) mdt
-WHERE didt.md = mdt.md);
-	
--- 부서별 maxdata table과 maxdata table을 비교하여 maxdata를 가지는 부서의 id 조회
-SELECT didt.did
-FROM 
-(SELECT d.DEPARTMENT_ID did, max(jh.END_DATE-jh.START_DATE) md
-	FROM DEPARTMENTS d, JOB_HISTORY jh
-	WHERE d.DEPARTMENT_ID = jh.DEPARTMENT_ID 
-	GROUP BY d.DEPARTMENT_ID) didt, 
-(SELECT max(jh.END_DATE-jh.START_DATE) md
-	FROM JOB_HISTORY jh) mdt
-WHERE didt.md = mdt.md;
-
--- 각 부서별 maxdata table
-(SELECT d.DEPARTMENT_ID did, max(jh.END_DATE-jh.START_DATE) md
-FROM DEPARTMENTS d, JOB_HISTORY jh
-WHERE d.DEPARTMENT_ID = jh.DEPARTMENT_ID 
-GROUP BY d.DEPARTMENT_ID); didt
-
--- maxdata만 뽑은 table
-(SELECT max(jh.END_DATE-jh.START_DATE) md
-FROM JOB_HISTORY jh); mdt
+FROM JOB_HISTORY jh, JOBS j, DEPARTMENTS d, EMPLOYEES e 
+WHERE e.DEPARTMENT_ID = d.DEPARTMENT_ID 
+	AND e.JOB_ID = j.JOB_ID
+	AND jh.EMPLOYEE_ID = e.EMPLOYEE_ID 
+	AND MONTHS_BETWEEN(jh.END_DATE, jh.START_DATE) 
+		= (SELECT max(MONTHS_BETWEEN(jh.END_DATE,jh.START_DATE))
+			FROM JOB_HISTORY jh) ;
 
 /* # 실습8. 시애틀(Seattle)에 있는 부서에 근무하는 모든 직원들의
 								부서아이디, 부서명, 직원아이디, 직원명을 조회 */
@@ -420,7 +401,6 @@ SELECT d.DEPARTMENT_ID
 FROM DEPARTMENTS d, LOCATIONS l 
 WHERE d.LOCATION_ID = l.LOCATION_ID 
 	AND l.CITY = 'Seattle';
-	
 	
 /* # 실습9. 유럽(Europe)에 있는 도시들에 있는 모든 부서에 근무하는 직원들의
 							도시명, 부서아이디, 부서명, 직원아이디, 직원명을 조회 */
@@ -445,34 +425,49 @@ WHERE r.REGION_ID = c.REGION_ID
 /* # 실습10. 아시아(Asia)에 위치하고 있는 부서들 중 직원수가 가장 많은 부서의
 									도시명, 부서아이디, 부서명, 직원수를 조회 */
 -- rownum으로 한번 다시 풀어보기! - where절에서 사용
+-- 집계함수 having에 넣기 (실습26 참고)
 	
+-- self2
+SELECT *
+FROM (SELECT e.DEPARTMENT_ID, l.CITY, d.DEPARTMENT_NAME, count(e.EMPLOYEE_ID) 
+		FROM REGIONS r, COUNTRIES c, LOCATIONS l, DEPARTMENTS d, EMPLOYEES e
+		WHERE r.REGION_NAME = 'Americas'
+			AND r.REGION_ID = c.REGION_ID 
+			AND c.COUNTRY_ID = l.COUNTRY_ID 
+			AND l.LOCATION_ID = d.LOCATION_ID
+			AND d.DEPARTMENT_ID = e.DEPARTMENT_ID
+		GROUP BY e.DEPARTMENT_ID, l.CITY, d.DEPARTMENT_NAME
+		ORDER BY count(e.EMPLOYEE_ID) desc) 
+WHERE rownum=1; 
+	
+-- self
 SELECT l.CITY, d.DEPARTMENT_ID, d.DEPARTMENT_NAME, count(e.EMPLOYEE_ID)
 FROM LOCATIONS l, DEPARTMENTS d, EMPLOYEES e
 WHERE l.LOCATION_ID = d.LOCATION_ID 
 	AND d.DEPARTMENT_ID = e.DEPARTMENT_ID 
 	AND d.DEPARTMENT_ID IN (SELECT as_didt.did
-FROM 
-	(SELECT numt.did did
-		FROM 
-			(SELECT max(numt.emp_num) max_num
-				FROM (SELECT d.DEPARTMENT_ID did, count(e.EMPLOYEE_ID) emp_num
-						FROM EMPLOYEES e, DEPARTMENTS d
-						WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 
-						GROUP BY d.DEPARTMENT_ID) numt)	maxt,
-			(SELECT d.DEPARTMENT_ID did, count(e.EMPLOYEE_ID) emp_num
-				FROM EMPLOYEES e, DEPARTMENTS d
-				WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 
-				GROUP BY d.DEPARTMENT_ID) numt
-		WHERE numt.emp_num = maxt.max_num) max_didt,
-	(SELECT d.DEPARTMENT_ID did
-		FROM REGIONS r, COUNTRIES c, LOCATIONS l, DEPARTMENTS d
-		WHERE r.REGION_ID = c.REGION_ID 
-			AND c.COUNTRY_ID = l.COUNTRY_ID 
-			AND l.LOCATION_ID = d.LOCATION_ID) as_didt
-WHERE max_didt.did = as_didt.did)
-GROUP BY l.CITY, d.DEPARTMENT_ID, d.DEPARTMENT_NAME;
-	
-
+							FROM 
+								(SELECT numt.did did
+									FROM 
+										(SELECT max(numt.emp_num) max_num
+											FROM 
+												(SELECT d.DEPARTMENT_ID did, count(e.EMPLOYEE_ID) emp_num
+													FROM EMPLOYEES e, DEPARTMENTS d
+													WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 
+													GROUP BY d.DEPARTMENT_ID) numt)	maxt,
+												(SELECT d.DEPARTMENT_ID did, count(e.EMPLOYEE_ID) emp_num
+													FROM EMPLOYEES e, DEPARTMENTS d
+													WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 
+													GROUP BY d.DEPARTMENT_ID) numt
+											WHERE numt.emp_num = maxt.max_num) max_didt,
+								(SELECT d.DEPARTMENT_ID did
+									FROM REGIONS r, COUNTRIES c, LOCATIONS l, DEPARTMENTS d
+									WHERE r.REGION_NAME = 'Americas'
+										AND r.REGION_ID = c.REGION_ID 
+										AND c.COUNTRY_ID = l.COUNTRY_ID 
+										AND l.LOCATION_ID = d.LOCATION_ID) as_didt
+							WHERE max_didt.did = as_didt.did)
+							GROUP BY l.CITY, d.DEPARTMENT_ID, d.DEPARTMENT_NAME;
 
 --5. 1 table에서 4table 조건을 만족하는 부서 id를 조회
 SELECT as_didt.did
@@ -507,7 +502,7 @@ FROM
 				GROUP BY d.DEPARTMENT_ID) numt)	maxt,
 	(SELECT d.DEPARTMENT_ID did, count(e.EMPLOYEE_ID) emp_num
 		FROM EMPLOYEES e, DEPARTMENTS d
-		WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 
+		WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 	
 		GROUP BY d.DEPARTMENT_ID) numt
 WHERE numt.emp_num = maxt.max_num; max_didt
 
@@ -526,16 +521,100 @@ WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
 GROUP BY d.DEPARTMENT_ID; numt
 
 --1. region, countrie, location, department 조인으로 asia에 위치하는 부서 조회
-SELECT d.DEPARTMENT_ID did
-FROM REGIONS r, COUNTRIES c, LOCATIONS l, DEPARTMENTS d
-WHERE r.REGION_ID = c.REGION_ID 
+SELECT e.DEPARTMENT_ID, l.CITY, d.DEPARTMENT_NAME, count(e.EMPLOYEE_ID) 
+FROM REGIONS r, COUNTRIES c, LOCATIONS l, DEPARTMENTS d, EMPLOYEES e
+WHERE r.REGION_NAME = 'Americas'
+	AND r.REGION_ID = c.REGION_ID 
 	AND c.COUNTRY_ID = l.COUNTRY_ID 
-	AND l.LOCATION_ID = d.LOCATION_ID; as_didt
+	AND l.LOCATION_ID = d.LOCATION_ID
+	AND d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY e.DEPARTMENT_ID, l.CITY, d.DEPARTMENT_NAME; ast
 	
 	
 /* # 실습11. 아메리카(Americas)에 위치하고 있는 부서들 중 직원수가 가장 많은 부서의
 --    	 평균월급보다 평균월급이 높은 부서들의 부서아이디, 부서명, 직원수, 평균월급을 조회 */
-(e.FIRST_NAME||' '||e.LAST_NAME) "EMP_NAME"
+	
+SELECT d.DEPARTMENT_ID, d.DEPARTMENT_NAME, count(e.EMPLOYEE_ID), avg(nvl(e.SALARY,0))
+FROM DEPARTMENTS d, EMPLOYEES e
+WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY d.DEPARTMENT_ID, d.DEPARTMENT_NAME
+HAVING avg(nvl(e.SALARY,0)) > (SELECT emp_countt.sal_avg
+								FROM 
+									(SELECT e.DEPARTMENT_ID, count(e.EMPLOYEE_ID), avg(nvl(e.SALARY,0)) sal_avg
+										FROM REGIONS r, COUNTRIES c, LOCATIONS l, DEPARTMENTS d, EMPLOYEES e
+										WHERE r.REGION_NAME = 'Americas'
+											AND r.REGION_ID = c.REGION_ID 
+											AND c.COUNTRY_ID = l.COUNTRY_ID 
+											AND l.LOCATION_ID = d.LOCATION_ID
+											AND d.DEPARTMENT_ID = e.DEPARTMENT_ID
+										GROUP BY e.DEPARTMENT_ID
+										ORDER BY count(e.EMPLOYEE_ID) DESC) emp_countt
+								WHERE rownum=1);
+
+--3. 직원수 최대인 부서의 평균월급
+SELECT emp_countt.sal_avg
+FROM 
+	(SELECT e.DEPARTMENT_ID, count(e.EMPLOYEE_ID), avg(nvl(e.SALARY,0)) sal_avg
+		FROM DEPARTMENTS d, EMPLOYEES e
+		WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 
+			AND d.DEPARTMENT_ID <100
+		GROUP BY e.DEPARTMENT_ID
+		ORDER BY count(e.EMPLOYEE_ID) DESC) emp_countt
+WHERE rownum=1;
+														
+------														
+SELECT emp_countt.sal_avg
+FROM (SELECT e.DEPARTMENT_ID did, count(e.EMPLOYEE_ID), avg(nvl(e.SALARY,0)) sal_avg
+		FROM EMPLOYEES e, (SELECT d.DEPARTMENT_ID did
+							FROM DEPARTMENTS d
+							WHERE d.DEPARTMENT_ID <100) am_didt
+		WHERE e.DEPARTMENT_ID = am_didt.did
+		GROUP BY e.DEPARTMENT_ID
+		ORDER BY count(e.EMPLOYEE_ID) DESC) emp_countt
+WHERE rownum =1; max_count_didt
+
+--2. 부서별 직원수, 평균월급
+
+SELECT e.DEPARTMENT_ID, count(e.EMPLOYEE_ID), avg(nvl(e.SALARY,0))
+FROM DEPARTMENTS d, EMPLOYEES e
+WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 
+	AND d.DEPARTMENT_ID <100
+GROUP BY e.DEPARTMENT_ID;
+ORDER BY count(e.EMPLOYEE_ID) DESC;													
+										
+------
+
+SELECT e.DEPARTMENT_ID, count(e.EMPLOYEE_ID), avg(nvl(e.SALARY,0))
+FROM EMPLOYEES e, (SELECT d.DEPARTMENT_ID did
+							FROM DEPARTMENTS d
+							WHERE d.DEPARTMENT_ID <100) am_didt
+WHERE e.DEPARTMENT_ID = am_didt.did
+GROUP BY e.DEPARTMENT_ID
+ORDER BY count(e.EMPLOYEE_ID) DESC;
+
+--1. 아메리카에 위치하는 부서 찾기
+
+SELECT d.DEPARTMENT_ID
+FROM DEPARTMENTS d
+WHERE d.DEPARTMENT_ID <100;					
+							
+SELECT e.DEPARTMENT_ID, count(e.EMPLOYEE_ID), avg(nvl(e.SALARY,0))
+FROM REGIONS r, COUNTRIES c, LOCATIONS l, DEPARTMENTS d, EMPLOYEES e
+WHERE r.REGION_NAME = 'Americas'
+	AND r.REGION_ID = c.REGION_ID 
+	AND c.COUNTRY_ID = l.COUNTRY_ID 
+	AND l.LOCATION_ID = d.LOCATION_ID
+	AND d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY e.DEPARTMENT_ID
+ORDER BY count(e.EMPLOYEE_ID) DESC; 
+
+	
+	
+/* # 실습12.  레젼명(REGION_NAME), 국가명, 도시명, 부서명, 직원수, 부서평균월급, 순위를 조회
+								 (단, 부서평균월급이 높은순으로 정렬. 순위는 부서평균월급순) */
+-- rownum 사용 -> 12 만들고 10번고쳐보기!
+-- 게시판 paging query 검색
+(e.FIRST_NAME||' '||e.LAST_NAME) "EMP_NAME";
 SELECT * FROM EMPLOYEES e;
 SELECT * FROM DEPARTMENTS d;
 SELECT * FROM JOBS j;
@@ -543,12 +622,6 @@ SELECT * FROM JOB_HISTORY jh;
 SELECT * FROM LOCATIONS l;
 SELECT * FROM COUNTRIES c;
 SELECT * FROM REGIONS r;
-	
-	
-/* # 실습12.  레젼명(REGION_NAME), 국가명, 도시명, 부서명, 직원수, 부서평균월급, 순위를 조회
-								 (단, 부서평균월급이 높은순으로 정렬. 순위는 부서평균월급순) */
--- rownum 사용 -> 12 만들고 10번고쳐보기!
--- 게시판 paging query 검색
 
 
 	
