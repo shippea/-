@@ -325,53 +325,34 @@ WHERE j.JOB_ID = e.JOB_ID
 										FROM JOBS j);			
 
 --1. 최대급여 - 최소급여 차가 가장 큰 값을 구하기
-
 SELECT max(j.MAX_SALARY-j.MIN_SALARY)
 FROM JOBS j;
 
 
 -- self
-SELECT j.JOB_ID, j.JOB_TITLE, e.EMPLOYEE_ID , (e.FIRST_NAME||' '||e.LAST_NAME) "EMP_NAME"
-FROM EMPLOYEES e, JOBS j, 
-	(SELECT t22.JOB_ID 
-	 FROM 
-		(SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS t22gap 
-			FROM EMPLOYEES e 
-			GROUP BY e.JOB_ID) t22,
-		(SELECT max (t1.t1gap) AS t2gap 
-			FROM (SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS t1gap	
-					FROM EMPLOYEES e 
-					GROUP BY e.JOB_ID) t1) t2
-	WHERE t22.t22gap = t2.t2gap) t3
+
+SELECT e.JOB_ID, j.JOB_TITLE, e.EMPLOYEE_ID, (e.FIRST_NAME||' '||e.LAST_NAME) "EMP_NAME"
+FROM EMPLOYEES e, JOBS j
 WHERE e.JOB_ID = j.JOB_ID 
-	AND e.job_id = t3.job_id;
-
---4. t3 / t2와 t22에서를 비교해서 max차이인 job_id를 조회
-SELECT t22.JOB_ID 
-FROM 
-	(SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS t22gap 
-		FROM EMPLOYEES e 
-		GROUP BY e.JOB_ID) t22,
-	(SELECT max (t1.t1gap) AS t2gap 
-		FROM (SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS t1gap	
-				FROM EMPLOYEES e 
-				GROUP BY e.JOB_ID) t1) t2
-WHERE t22.t22gap = t2.t2gap;
+	AND e.JOB_ID = (SELECT t1.jid
+					FROM (SELECT e.JOB_ID jid, max(e.SALARY)-min(e.SALARY) 
+							FROM EMPLOYEES e 
+							GROUP BY e.JOB_ID
+							ORDER BY max(e.SALARY)-min(e.SALARY) DESC) t1
+					WHERE rownum=1);
 
 
---3. t22 / t2에서 뽑은 max 차이를 비교하기 위해 만든 t1 copy테이블
-SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS t22gap 
-FROM EMPLOYEES e 
-GROUP BY e.JOB_ID;
+--2. t2 차이가 최대인 값과 직무아이디구하기
+SELECT t1.jid
+FROM (SELECT e.JOB_ID jid, max(e.SALARY)-min(e.SALARY) AS gap FROM EMPLOYEES e GROUP BY e.JOB_ID ORDER BY max(e.SALARY)-min(e.SALARY) DESC) t1
+WHERE rownum=1
+GROUP BY t1.jid;
 
---2. t2
-SELECT max (t1.gap) AS t1gap
-FROM (SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS gap FROM EMPLOYEES e GROUP BY e.JOB_ID) t1;
-
---1. t1
-SELECT e.JOB_ID, max(e.SALARY)-min(e.SALARY) AS gap 
-FROM EMPLOYEES e
-GROUP BY e.JOB_ID;
+--1. t1 / jobid별로 최대월급-최소월급차이 구하기
+SELECT j.JOB_ID, j.JOB_TITLE, e.EMPLOYEE_ID, e.FIRST_NAME, max(e.SALARY)-min(e.SALARY) AS gap 
+FROM EMPLOYEES e, JOBS j
+WHERE e.JOB_ID = j.JOB_ID 
+GROUP BY ROLLUP (j.JOB_ID, j.JOB_TITLE, e.EMPLOYEE_ID, e.FIRST_NAME);
 
 /* # 실습7. 7. 직무수행시간(END_DATE-START_DATE)이 가장 길었던 직무를 수행했던 부서에
 					근무하는 직원들의 직무아이디, 직무명, 부서명, 직원아이디, 직원명을 조회 */
@@ -622,6 +603,24 @@ SELECT * FROM JOB_HISTORY jh;
 SELECT * FROM LOCATIONS l;
 SELECT * FROM COUNTRIES c;
 SELECT * FROM REGIONS r;
+
+
+SELECT r.REGION_NAME, c.COUNTRY_NAME, l.CITY, dep_count_empt.dn, dep_count_empt.count_emp, 
+		dep_count_empt.avg_sal, RANK() over(ORDER BY dep_count_empt.avg_sal DESC) "Rank"
+FROM REGIONS r, COUNTRIES c, LOCATIONS l,
+	(SELECT d.DEPARTMENT_NAME dn, d.LOCATION_ID lid, count(e.DEPARTMENT_ID) count_emp, avg(nvl(e.SALARY,0)) avg_sal
+		FROM DEPARTMENTS d, EMPLOYEES e
+		WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 
+		GROUP BY d.DEPARTMENT_NAME, d.LOCATION_ID) dep_count_empt
+WHERE r.REGION_ID = c.REGION_ID 
+	AND c.COUNTRY_ID = l.COUNTRY_ID
+	AND l.LOCATION_ID = dep_count_empt.lid;
+
+--1 
+SELECT d.DEPARTMENT_NAME, d.LOCATION_ID, d.DEPARTMENT_ID, count(e.DEPARTMENT_ID) count_emp, avg(nvl(e.SALARY,0)) avg_sal
+FROM DEPARTMENTS d, EMPLOYEES e
+WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID 
+GROUP BY d.DEPARTMENT_NAME, d.LOCATION_ID, d.DEPARTMENT_ID; dep_count_empt
 
 
 	
