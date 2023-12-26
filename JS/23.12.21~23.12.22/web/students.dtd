@@ -1,0 +1,7 @@
+<!DOCTYPE student
+[
+<!element students (student)>
+<!element student (no,name)>
+<!element no (#pcdata)>
+<!element name (#pcdata)>
+]>
