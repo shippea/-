@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script defer src="event1.js"></script>
+</head>
+<body>
+    <div id="wrapper">
+        <p>
+            <!-- attribute 방식으로 이벤트핸들러 등록-->
+            <input id="btn1" type="button" value="btn1" onclick="clickBtn1();" />&nbsp;
+            <!-- property 방식으로 이벤트핸들러 등록 -->
+            <input id="btn2" type="button" value="btn2" />&nbsp;
+            <!-- addEventListener방식으로 이벤트핸들러 등록 -->
+            <input id="btn3" type="button" value="btn3" />&nbsp;
+            <!-- jquery방식으로 이벤트핸들러 등록 -->
+            <input id="btn4" type="button" value="btn4" />
+        </p>
+    </div>
+</body>
+</html>
