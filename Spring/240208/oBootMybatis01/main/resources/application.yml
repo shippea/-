@@ -1,0 +1,40 @@
+#//요 세팅 파일을 가독성있게 해보자! 
+server:
+  port: 8387
+  # oracle Connect
+spring :
+  datasource :
+    driver-class-name : oracle.jdbc.driver.OracleDriver
+    url : jdbc:oracle:thin:@localhost:1521/xe
+    username : scott
+    password : tiger
+# File Size
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+#jpa setting
+  jpa:
+    hibernate:
+      ddl-auto: update #none create
+    properties:
+      hibernate:
+      show_sql: true     #system.out에  하이버네이트 실행 SQL
+      format_sql: true
+
+
+# view Resolver
+  mvc :
+   view : 
+     prefix : /WEB-INF/views/
+     suffix: .jsp
+
+# my batis
+mybatis:
+  config-location: classpath:configuration.xml
+  mapper-locations: classpath:mqppers/*.xml  #main/리소스 mqppers
+
+logging.level:
+  
+  org.hibernate.SQL: debug  #logger를 통해 하이버네이트 실행 SQL
+  
