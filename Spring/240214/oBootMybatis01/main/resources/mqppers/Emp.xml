@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.oBootMybatis01.EmpMapper">
+	<select id="empTotal" resultType="int">
+		SELECT Count(*) FROM emp
+	</select>
+	
+	<select id="tkEmpListAll" parameterType="Emp" resultType="Emp">
+		SELECT *
+		FROM
+		(
+			SELECT rownum rn, a.*
+			FROM
+				(select * from emp order by empno) a
+		)
+		WHERE rn BETWEEN #{start} and #{end}
+	</select>
+	
+	<select id="tkEmpSelOne" parameterType="int" resultType="Emp">
+		SELECT *
+		FROM emp
+		WHERE empno = #{empno}
+	</select>
+	
+<!-- 	<select id="tkEmpUpdateOne" parameterType="int" resultType="Emp">
+		UPDATE emp set sal = #{sal}
+		WHERE empno = #{empno}
+	</select> -->
+	
+</mapper>
